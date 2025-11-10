@@ -14,3 +14,7 @@ def add_user():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5001)
+
+@app.route("/", methods=["GET"])
+def root_users():
+    return jsonify(users), 200
