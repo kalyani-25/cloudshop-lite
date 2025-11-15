@@ -1,0 +1,11 @@
+server {
+    listen 80;
+    location = /users   { return 301 /users/; }
+    location = /catalog { return 301 /catalog/; }
+    location = /orders  { return 301 /orders/; }
+
+    location /users/   { proxy_pass http://users:5001/; }
+    location /catalog/ { proxy_pass http://catalog:5002/; }
+    location /orders/  { proxy_pass http://orders:5003/; }
+}
+X

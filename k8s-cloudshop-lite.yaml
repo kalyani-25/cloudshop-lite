@@ -1,0 +1,184 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cloudshop-lite
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: users-service
+  namespace: cloudshop-lite
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: users-service
+  template:
+    metadata:
+      labels:
+        app: users-service
+    spec:
+      containers:
+        - name: users-service
+          image: 287030536779.dkr.ecr.us-east-1.amazonaws.com/cloudshop-lite-users:latest
+          ports:
+            - containerPort: 5001
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: users-service
+  namespace: cloudshop-lite
+spec:
+  selector:
+    app: users-service
+  ports:
+    - port: 5001
+      targetPort: 5001
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: catalog-service
+  namespace: cloudshop-lite
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: catalog-service
+  template:
+    metadata:
+      labels:
+        app: catalog-service
+    spec:
+      containers:
+        - name: catalog-service
+          image: 287030536779.dkr.ecr.us-east-1.amazonaws.com/cloudshop-lite-catalog:latest
+          ports:
+            - containerPort: 5002
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: catalog-service
+  namespace: cloudshop-lite
+spec:
+  selector:
+    app: catalog-service
+  ports:
+    - port: 5002
+      targetPort: 5002
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: orders-service
+  namespace: cloudshop-lite
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: orders-service
+  template:
+    metadata:
+      labels:
+        app: orders-service
+    spec:
+      containers:
+        - name: orders-service
+          image: 287030536779.dkr.ecr.us-east-1.amazonaws.com/cloudshop-lite-orders:latest
+          ports:
+            - containerPort: 5003
+          env:
+            - name: DB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: cloudshop-lite-db-config
+                  key: DB_HOST
+            - name: DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: cloudshop-lite-db-config
+                  key: DB_NAME
+            - name: DB_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: cloudshop-lite-db-config
+                  key: DB_PORT
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: cloudshop-lite-db-secret
+                  key: DB_USER
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: cloudshop-lite-db-secret
+                  key: DB_PASSWORD
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: orders-service
+  namespace: cloudshop-lite
+spec:
+  selector:
+    app: orders-service
+  ports:
+    - port: 5003
+      targetPort: 5003
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloudshop-nginx
+  namespace: cloudshop-lite
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cloudshop-nginx
+  template:
+    metadata:
+      labels:
+        app: cloudshop-nginx
+    spec:
+      containers:
+        - name: nginx
+          image: 287030536779.dkr.ecr.us-east-1.amazonaws.com/cloudshop-lite-nginx:latest
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cloudshop-nginx
+  namespace: cloudshop-lite
+spec:
+  type: LoadBalancer
+  selector:
+    app: cloudshop-nginx
+  ports:
+    - port: 80
+      targetPort: 80
