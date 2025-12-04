@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: aiops-bot-lb
+  namespace: cloudshop        # FIXED (lowercase; actual namespace)
+spec:
+  type: LoadBalancer
+  selector:
+    app: aiops-bot            # Must match your aiops-bot deployment label
+  ports:
+    - name: http
+      port: 80                # ELB external port
+      targetPort: 5100        # Flask app container port
+      protocol: TCP
+

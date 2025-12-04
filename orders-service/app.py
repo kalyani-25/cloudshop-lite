@@ -4,21 +4,15 @@ from flask_cors import CORS
 from sqlalchemy import create_engine, text
 
 # ---------------------------
-# DB CONFIG FROM ENV
+# DB CONFIG FROM SINGLE ENV VAR
 # ---------------------------
-DB_HOST = os.environ.get("DB_HOST", "cloudshop-lite-db.c2b80owusuhd.us-east-1.rds.amazonaws.com")
-DB_PORT = os.environ.get("DB_PORT", "5432")
-DB_NAME = os.environ.get("DB_NAME", "postgres")  # matches the DB you set in RDS
-DB_USER = os.environ.get("DB_USER")
-DB_PASSWORD = os.environ.get("DB_PASSWORD")
+DATABASE_URI = os.environ.get("DATABASE_URI")
 
-if not DB_USER or not DB_PASSWORD:
-    raise RuntimeError("DB_USER and DB_PASSWORD must be set as environment variables")
-
-DATABASE_URL = f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+if not DATABASE_URI:
+    raise RuntimeError("DATABASE_URI must be set as an environment variable")
 
 # SQLAlchemy engine
-engine = create_engine(DATABASE_URL, future=True)
+engine = create_engine(DATABASE_URI, future=True)
 
 # Ensure table exists on startup
 with engine.begin() as conn:
@@ -86,4 +80,5 @@ def create_order():
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5003)
+    # IMPORTANT: orders service should listen on 5002 (matches K8s service/containerPort)
+    app.run(host="0.0.0.0", port=5002)

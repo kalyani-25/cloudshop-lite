@@ -8,6 +8,14 @@ CORS(app, resources={r"/*": {"origins": "*"}})
 users = [
     {"id": 1, "name": "Alice"},
     {"id": 2, "name": "Bob"},
+    {"id": 3, "name": "Charlie"},
+    {"id": 4, "name": "Diana"},
+    {"id": 5, "name": "Ethan"},
+    {"id": 6, "name": "Fiona"},
+    {"id": 7, "name": "George"},
+    {"id": 8, "name": "Hannah"},
+    {"id": 9, "name": "Ivan"},
+    {"id": 10, "name": "Jasmine"},
 ]
 
 # Nginx path:  /users/users  -> backend sees /users
@@ -30,5 +38,6 @@ def root_users():
     return jsonify(users), 200
 
 
+
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5001)
+    app.run(host="0.0.0.0", port=5000)

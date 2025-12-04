@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind Deployment
+metadata:
+  name: users-deployment
+  labels:
+    app: users
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: users
+  template:
+    metadata:
+      labels:
+        app: users
+    spec:
+      containers:
+        - name: users
+          # TODO: replace with your real image (Docker Hub or ECR)
+          image: YOUR_REGISTRY/users-service:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5000
+          env:
+            - name: FLASK_ENV
+              value: "production"
+            # TODO: later replace with real RDS connection string
+            - name: DATABASE_URI
+              value: "postgresql://admin:CHANGE_ME@CHANGE_ME_RDS_HOST:5432/cloudshop_users"

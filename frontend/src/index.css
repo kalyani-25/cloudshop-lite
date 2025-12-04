@@ -3,37 +3,97 @@
 @tailwind utilities;
 
 /* === Global App Styling === */
-html, body {
+html,
+body {
   @apply bg-slate-900 text-slate-100 min-h-screen m-0 p-0;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-               Roboto, Helvetica, Arial, sans-serif;
+    Roboto, Helvetica, Arial, sans-serif;
 }
 
 html {
   scroll-behavior: smooth;
 }
 
+/* === Scrollbars === */
 ::-webkit-scrollbar {
   width: 8px;
+  height: 8px;
 }
+
 ::-webkit-scrollbar-track {
-  background: #0f172a;
+  background: #0f172a; /* slate-900 */
 }
+
 ::-webkit-scrollbar-thumb {
-  background: #334155;
+  background: #334155; /* slate-700 */
   border-radius: 4px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
-  background: #475569;
+  background: #475569; /* slate-600 */
 }
 
+/* === Links === */
 a {
-  @apply text-emerald-400 hover:text-emerald-300 transition;
+  @apply text-emerald-400 hover:text-emerald-300 transition-colors;
 }
 
-/* Fallback button style (when not using Tailwind classes directly) */
+/* === Base Button Styles (fallback if Tailwind classes are not applied) === */
 button {
   @apply rounded-lg bg-emerald-500 text-slate-900 font-medium 
-         px-3 py-2 text-sm hover:bg-emerald-400 transition 
+         px-3 py-2 text-sm 
+         hover:bg-emerald-400 transition 
          disabled:opacity-50 disabled:cursor-not-allowed;
+}
+
+/* === Inputs, Textareas === */
+input,
+textarea {
+  @apply bg-slate-900 border border-slate-700 rounded-lg text-slate-100 
+         px-3 py-2 text-sm outline-none transition 
+         focus:ring-1 focus:ring-emerald-400 focus:border-emerald-400;
+}
+
+/* === Cards / Containers (global polish for consistent UI) === */
+.card {
+  @apply rounded-2xl bg-slate-900/70 border border-slate-800 
+         shadow-sm hover:shadow-emerald-500/10 transition-shadow;
+}
+
+/* === Panels (AI-Ops panel, architecture box) === */
+.panel {
+  @apply rounded-2xl bg-slate-900/80 border border-slate-800 
+         p-4 shadow-lg shadow-emerald-500/5 backdrop-blur;
+}
+
+/* === Tables === */
+table {
+  @apply w-full text-xs;
+}
+
+table th {
+  @apply text-left py-2 text-slate-400 border-b border-slate-700;
+}
+
+table td {
+  @apply py-1.5 border-b border-slate-900;
+}
+
+/* === Tabs === */
+.tab-button {
+  @apply flex-1 text-sm py-2 border-b-2 transition cursor-pointer;
+}
+
+.tab-button-active {
+  @apply border-emerald-400 text-emerald-300 bg-slate-900;
+}
+
+.tab-button-inactive {
+  @apply border-transparent text-slate-400 
+         hover:text-slate-200 hover:bg-slate-900/60;
+}
+
+/* === Utility for glowing pulses (AI indicator dot) === */
+.glow-pulse {
+  box-shadow: 0 0 8px rgba(52, 211, 153, 0.8);
 }

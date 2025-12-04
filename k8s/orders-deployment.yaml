@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: orders-deployment
+  namespace: cloudshop
+  labels:
+    app: orders
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: orders
+  template:
+    metadata:
+      labels:
+        app: orders
+    spec:
+      containers:
+        - name: orders
+          image: 420828412451.dkr.ecr.us-east-1.amazonaws.com/cloudshop-orders:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5002
+          env:
+            - name: FLASK_ENV
+              value: "production"
+            - name: DATABASE_URI
+              valueFrom:
+                secretKeyRef:
+                  name: cloudshop-db-secret
+                  key: DATABASE_URI
+            - name: USERS_SERVICE_URL
+              value: "http://users-service:5000"
+            - name: CATALOG_SERVICE_URL
+              value: "http://catalog-service:5001"
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi

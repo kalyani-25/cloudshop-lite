@@ -1,0 +1,77 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cloudshop-lite
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cloudshop-lite-db-config
+  namespace: cloudshop-lite
+data:
+  DB_HOST: "cloudshop-lite-postgres"
+  DB_NAME: "cloudshop"
+  DB_PORT: "5432"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: cloudshop-lite-db-secret
+  namespace: cloudshop-lite
+type: Opaque
+stringData:
+  DB_USER: "clouduser"
+  DB_PASSWORD: "cloudpass"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloudshop-lite-postgres
+  namespace: cloudshop-lite
+  labels:
+    app: cloudshop-lite-postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cloudshop-lite-postgres
+  template:
+    metadata:
+      labels:
+        app: cloudshop-lite-postgres
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:15
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_DB
+              value: cloudshop
+            - name: POSTGRES_USER
+              value: clouduser
+            - name: POSTGRES_PASSWORD
+              value: cloudpass
+          volumeMounts:
+            - name: pgdata
+              mountPath: /var/lib/postgresql/data
+      volumes:
+        - name: pgdata
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cloudshop-lite-postgres
+  namespace: cloudshop-lite
+  labels:
+    app: cloudshop-lite-postgres
+spec:
+  type: ClusterIP
+  selector:
+    app: cloudshop-lite-postgres
+  ports:
+    - name: postgres
+      port: 5432
+      targetPort: 5432
+

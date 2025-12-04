@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind Deployment
+metadata:
+  name: frontend-deployment
+  labels:
+    app: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+        - name: frontend
+          image: YOUR_REGISTRY/cloudshop-frontend:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+          env:
+            # Optional: only used if your container reads this at runtime
+            - name: VITE_API_BASE_URL
+              value: "http://nginx-service"

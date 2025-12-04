@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aiops-bot
+  namespace: cloudshop
+  labels:
+    app: aiops-bot
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: aiops-bot
+  template:
+    metadata:
+      labels:
+        app: aiops-bot
+    spec:
+      serviceAccountName: aiops-bot
+      containers:
+        - name: aiops-bot
+          image: 420828412451.dkr.ecr.us-east-1.amazonaws.com/cloudshop-aiops:v2
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5100
+          env:
+            - name: AWS_REGION
+              value: us-east-1
+            - name: LOG_GROUP
+              value: /aws/eks/cloudshop-lite/cluster
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: cloudshop-aws-creds
+                  key: aws_access_key_id
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: cloudshop-aws-creds
+                  key: aws_secret_access_key
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: 200m
+              memory: 256Mi

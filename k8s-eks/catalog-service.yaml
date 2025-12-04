@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: catalog-service
+  namespace: cloudshop
+spec:
+  selector:
+    app: catalog
+  ports:
+    - name: http
+      port: 5001
+      protocol: TCP
+      targetPort: 5001    # 👈 CHANGE from 5002 to 5001
+  type: ClusterIP

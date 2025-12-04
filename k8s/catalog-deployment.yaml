@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind Deployment
+metadata:
+  name: catalog-deployment
+  labels:
+    app: catalog
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: catalog
+  template:
+    metadata:
+      labels:
+        app: catalog
+    spec:
+      containers:
+        - name: catalog
+          image: YOUR_REGISTRY/catalog-service:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5001
+          env:
+            - name: FLASK_ENV
+              value: "production"
+            - name: DATABASE_URI
+              value: "postgresql://admin:CHANGE_ME@CHANGE_ME_RDS_HOST:5432/cloudshop_catalog"

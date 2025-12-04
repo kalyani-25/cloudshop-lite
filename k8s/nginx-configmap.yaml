@@ -1,0 +1,46 @@
+apiVersion: v1
+kind ConfigMap
+metadata:
+  name: nginx-config
+data:
+  nginx.conf: |
+    events {}
+
+    http {
+      upstream users_service {
+        server users-service:5000;
+      }
+
+      upstream catalog_service {
+        server catalog-service:5001;
+      }
+
+      upstream orders_service {
+        server orders-service:5002;
+      }
+
+      upstream frontend_service {
+        server frontend-service:80;
+      }
+
+      server {
+        listen 80;
+
+        # Frontend (React)
+        location / {
+          proxy_pass http://frontend_service;
+        }
+
+        location /users {
+          proxy_pass http://users_service;
+        }
+
+        location /catalog {
+          proxy_pass http://catalog_service;
+        }
+
+        location /orders {
+          proxy_pass http://orders_service;
+        }
+      }
+    }
