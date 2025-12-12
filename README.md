@@ -43,5 +43,7 @@ The system modernizes a simple Docker example into a production-style distribute
 
 # 🏗 Architecture Diagram
 
+<img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/7270ecc3-3d4b-4116-8753-835415a85aaa" />
+
 Place your main architecture diagram here:
 
